@@ -23,30 +23,20 @@ void loop()
 
 void Lenkunglinks()
 {
-	if(digitalRead(Sensorlinks)== HIGH){
-		digitalWrite(Motorrechts, HIGH);
-	}else{
-		digitalWrite(Motorrechts, LOW);
-	}
-
-	if(digitalRead(Sensorrechts)== HIGH){
+	if(digitalRead(Sensorlinks)== LOW){
 		digitalWrite(Motorlinks, HIGH);
 	}else{
 		digitalWrite(Motorlinks, LOW);
 	}
+
 }
 
 void Lenkungrechts()
 {
-	if(digitalRead(Sensorrechts)== HIGH){
-		digitalWrite(Motorlinks, HIGH);
-	}else{
-		digitalWrite(Motorlinks, LOW);
-	}
-
-	if(digitalRead(Sensorlinks)== HIGH){
+	if(digitalRead(Sensorrechts)== LOW){
 		digitalWrite(Motorrechts, HIGH);
 	}else{
 		digitalWrite(Motorrechts, LOW);
 	}
+
 }
