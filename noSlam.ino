@@ -1,4 +1,5 @@
 #include "Encoder.h"
+#include "SPI.h"
 
 const int PSR=2; //Pin Sensor Rechts
 const int PSL=3; //Pin Sensor Links
