@@ -1,5 +1,9 @@
 #include "Encoder.h"
 
+DBlock * currentBlock = new DBlock;
+
+int SDblock = 1;
+
 int Blockstelle = 0;
 
 encD * redptr ;
@@ -10,6 +14,73 @@ void EncoR (){
 
 void EncoL (){
 	redptr->L ++;
+}
+
+
+
+uint8_t wait4r(){
+	uint8_t resp;
+	do{
+		resp = SPI.transfer(0xff);
+	}while(resp == 0xff);
+	return resp;
+}
+
+void initSD(){
+	SPISettings SPIset(400000, MSBFIRST, SPI_MODE0);
+	SPI.beginTransaction(SPIset);
+	SPI.begin();
+
+	for(int i; i == 5;i++) SPI.transfer16(0xffff);
+
+	//Software Reset
+	digitalWrite(nss, LOW);
+	SPI.transfer(0x40);
+	SPI.transfer16(0x0000);
+	SPI.transfer16(0x0000);
+	SPI.transfer(0x95);
+
+	wait4r();
+	
+	do{
+		//cmd55
+		SPI.transfer(0x77);
+		SPI.transfer16(0x0000);
+		SPI.transfer16(0x0000);
+		SPI.transfer(0x01);
+	
+		//acmd41
+		SPI.transfer(0x69);
+		SPI.transfer16(0x4000);
+		SPI.transfer16(0x0000);
+		SPI.transfer(0x01);
+	}while(wait4r == 0x00);
+
+	SPI.setClockDivider(21);
+}
+
+void sendsbSD(DBlock * Data){
+	while(SPI.transfer(0xff) == 0);//wait until not busy
+
+	//cmd24
+	SPI.transfer(0x58);
+	SPI.transfer16(0x0000);
+	SPI.transfer16(SDblock);
+	SPI.transfer(0x00);
+	
+	wait4r();
+	SPI.transfer(0x00);
+	
+	//Data Packet
+	SPI.transfer(0xfe);
+	SPI.transfer(Data, 512);
+	SPI.transfer16(0x0000);
+
+	if(( 0b00011111 & SPI.transfer(0xff)) != 0b00101) /*bad*/;
+	
+	delete Data;
+	SDblock++;
+
 }
 
 void TC7_Handler()
@@ -36,11 +107,6 @@ void TC7_Handler()
 	}
 	Blockstelle ++;
 }
-
-
-
-
-
 
 void TimerInit(){
 	//von http://2manyprojects.net/timer-interrupts

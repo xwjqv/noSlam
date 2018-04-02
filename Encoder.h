@@ -1,8 +1,11 @@
 #pragma once
 
 #include "Arduino.h"
+#include "SPI.h"
 
-const int encWerte = 510;
+const int nss=11; //Slave select
+
+const int encWerte = 248;
 
 struct encD {
 	int R;
@@ -15,10 +18,12 @@ struct DBlock{
 	DBlock * ptrN;
 };
 
-static DBlock * currentBlock;
+//DBlock * currentBlock ;//= new DBlock;
 
 
 void EncoR();
 void EncoL();
+
+void initSD();
 
 void TimerInit();

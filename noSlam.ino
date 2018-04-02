@@ -10,15 +10,14 @@ const int PML=5; //Pin Motor Links
 const int pwmR=6;
 const int pwmL=7;
 
-const int ER=8;
-const int EL=9;
+const int ER=8; //Encoder Rechts
+const int EL=9; //Encoder Links
+
 
 const int pwmDuty=0xaf; //x0 bedeutet hexadezimal
 
 void setup()
 {
-	currentBlock = new DBlock;
-
 	//currentBlock = new DBlock;
 
 	TimerInit();
@@ -34,9 +33,14 @@ void setup()
 	
 	pinMode(pwmR, OUTPUT);
 	pinMode(pwmL, OUTPUT);
+
+	pinMode(nss, OUTPUT);
+	digitalWrite(nss, HIGH);
 	
 	analogWrite(pwmR, pwmDuty);
 	analogWrite(pwmL, pwmDuty);
+
+	initSD();
 }
 
 void loop()
