@@ -18,12 +18,18 @@ const int pwmDuty=0xaf; //x0 bedeutet hexadezimal
 
 void setup()
 {
+	pinMode(LED_BUILTIN, OUTPUT);
+	digitalWrite(LED_BUILTIN, LOW);
+
+	initSD();
+	
 	//currentBlock = new DBlock;
 
 	TimerInit();
 
 	pinMode(PSR, INPUT);
 	pinMode(PSL, INPUT);
+
 	
 	attachInterrupt(digitalPinToInterrupt(PSL), Lenkunglinks, CHANGE);
 	attachInterrupt(digitalPinToInterrupt(PSR), Lenkungrechts, CHANGE);
@@ -34,13 +40,9 @@ void setup()
 	pinMode(pwmR, OUTPUT);
 	pinMode(pwmL, OUTPUT);
 
-	pinMode(nss, OUTPUT);
-	digitalWrite(nss, HIGH);
-	
 	analogWrite(pwmR, pwmDuty);
 	analogWrite(pwmL, pwmDuty);
 
-	initSD();
 }
 
 void loop()

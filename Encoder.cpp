@@ -2,7 +2,7 @@
 
 DBlock * currentBlock = new DBlock;
 
-int SDblock = 1;
+int SDblock = 5;
 
 int Blockstelle = 0;
 
@@ -19,30 +19,41 @@ void EncoL (){
 
 
 uint8_t wait4r(){
+	digitalWrite(LED_BUILTIN, HIGH);
 	uint8_t resp;
 	do{
 		resp = SPI.transfer(0xff);
 	}while(resp == 0xff);
+	digitalWrite(LED_BUILTIN, LOW);
 	return resp;
 }
 
 void initSD(){
-	SPISettings SPIset(400000, MSBFIRST, SPI_MODE0);
+	SPISettings SPIset(200000, MSBFIRST, SPI_MODE0);
 	SPI.beginTransaction(SPIset);
 	SPI.begin();
+	
+	pinMode(nss, OUTPUT);
+	digitalWrite(nss, HIGH);
+	
 
-	for(int i; i == 5;i++) SPI.transfer16(0xffff);
+	for(int i=0; i == 5;i++) SPI.transfer16(0xffff);
 
 	//Software Reset
 	digitalWrite(nss, LOW);
+	SPI.transfer(0xffff);
+
 	SPI.transfer(0x40);
 	SPI.transfer16(0x0000);
 	SPI.transfer16(0x0000);
 	SPI.transfer(0x95);
 
 	wait4r();
+
+	delay(4000);
 	
 	do{
+		delay(1000);
 		//cmd55
 		SPI.transfer(0x77);
 		SPI.transfer16(0x0000);
@@ -54,7 +65,7 @@ void initSD(){
 		SPI.transfer16(0x4000);
 		SPI.transfer16(0x0000);
 		SPI.transfer(0x01);
-	}while(wait4r == 0x00);
+	}while(wait4r() != 0x00);
 
 	SPI.setClockDivider(21);
 }
@@ -97,6 +108,8 @@ void TC7_Handler()
 		//Blöcke verknüpfen
 		currentBlock->ptrN = DBtempPtr;
 		DBtempPtr->ptrP = currentBlock;
+
+		//sendsbSD(currentBlock);
 
 		//aktuellen Block auswechseln
 		currentBlock = DBtempPtr;
