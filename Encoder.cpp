@@ -1,6 +1,7 @@
 #include "Encoder.h"
 
 DBlock * currentBlock = new DBlock;
+File dataFile;
 
 int SDblock = 5;
 
@@ -16,6 +17,8 @@ void EncoL (){
 	redptr->L ++;
 }
 
+int nss = 11;
+
 
 
 uint8_t wait4r(){
@@ -29,47 +32,52 @@ uint8_t wait4r(){
 }
 
 void initSD(){
-	SPISettings SPIset(200000, MSBFIRST, SPI_MODE0);
-	SPI.beginTransaction(SPIset);
-	SPI.begin();
-	
-	pinMode(nss, OUTPUT);
-	digitalWrite(nss, HIGH);
-	
-
-	for(int i=0; i == 5;i++) SPI.transfer16(0xffff);
-
-	//Software Reset
-	digitalWrite(nss, LOW);
-	SPI.transfer(0xffff);
-
-	SPI.transfer(0x40);
-	SPI.transfer16(0x0000);
-	SPI.transfer16(0x0000);
-	SPI.transfer(0x95);
-
-	wait4r();
-
-	delay(4000);
-	
-	do{
-		delay(1000);
-		//cmd55
-		SPI.transfer(0x77);
-		SPI.transfer16(0x0000);
-		SPI.transfer16(0x0000);
-		SPI.transfer(0x01);
-	
-		//acmd41
-		SPI.transfer(0x69);
-		SPI.transfer16(0x4000);
-		SPI.transfer16(0x0000);
-		SPI.transfer(0x01);
-	}while(wait4r() != 0x00);
-
-	SPI.setClockDivider(21);
+	SD.begin(nss);
+	File dataFile = SD.open("dat.raw", FILE_WRITE);
 }
 
+////void initSD(){
+//	SPISettings SPIset(200000, MSBFIRST, SPI_MODE0);
+//	SPI.beginTransaction(SPIset);
+//	SPI.begin();
+//	
+//	pinMode(nss, OUTPUT);
+//	digitalWrite(nss, HIGH);
+//	
+//
+//	for(int i=0; i == 5;i++) SPI.transfer16(0xffff);
+//
+//	//Software Reset
+//	digitalWrite(nss, LOW);
+//	SPI.transfer(0xffff);
+//
+//	SPI.transfer(0x40);
+//	SPI.transfer16(0x0000);
+//	SPI.transfer16(0x0000);
+//	SPI.transfer(0x95);
+//
+//	wait4r();
+//
+//	delay(4000);
+//	
+//	do{
+//		delay(1000);
+//		//cmd55
+//		SPI.transfer(0x77);
+//		SPI.transfer16(0x0000);
+//		SPI.transfer16(0x0000);
+//		SPI.transfer(0x01);
+//	
+//		//acmd41
+//		SPI.transfer(0x69);
+//		SPI.transfer16(0x4000);
+//		SPI.transfer16(0x0000);
+//		SPI.transfer(0x01);
+//	}while(wait4r() != 0x00);
+//
+//	SPI.setClockDivider(21);
+//}
+//
 void sendsbSD(DBlock * Data){
 	while(SPI.transfer(0xff) == 0);//wait until not busy
 
@@ -110,6 +118,7 @@ void TC7_Handler()
 		DBtempPtr->ptrP = currentBlock;
 
 		//sendsbSD(currentBlock);
+		dataFile.write((char*)currentBlock, 512);
 
 		//aktuellen Block auswechseln
 		currentBlock = DBtempPtr;

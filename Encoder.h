@@ -2,8 +2,8 @@
 
 #include "Arduino.h"
 #include "SPI.h"
+#include "SD.h"
 
-const int nss=11; //Slave select
 
 const int encWerte = 248;
 
