@@ -33,7 +33,8 @@ uint8_t wait4r(){
 
 void initSD(){
 	SD.begin(nss);
-	File dataFile = SD.open("dat.raw", FILE_WRITE);
+	dataFile = SD.open("dat.raw", FILE_WRITE);
+	if(!dataFile) digitalWrite(LED_BUILTIN, HIGH);
 }
 
 ////void initSD(){
@@ -118,7 +119,7 @@ void TC7_Handler()
 		DBtempPtr->ptrP = currentBlock;
 
 		//sendsbSD(currentBlock);
-		dataFile.write((char*)currentBlock, 512);
+		dataFile.write((uint8_t*)currentBlock, 512);
 
 		//aktuellen Block auswechseln
 		currentBlock = DBtempPtr;

@@ -5,11 +5,11 @@
 #include "SD.h"
 
 
-const int encWerte = 248;
+const int encWerte = 252;
 
 struct encD {
-	int R;
-	int L;
+	uint8_t R;
+	uint8_t L;
 };
 
 struct DBlock{
