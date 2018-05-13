@@ -1,6 +1,3 @@
-#include "Encoder.h"
-#include "SPI.h"
-
 const int PSR=2; //Pin Sensor Rechts
 const int PSL=3; //Pin Sensor Links
 
@@ -10,23 +7,11 @@ const int PML=5; //Pin Motor Links
 const int pwmR=6;
 const int pwmL=7;
 
-const int ER=8; //Encoder Rechts
-const int EL=9; //Encoder Links
-
 
 const int pwmDuty=0xaf; //x0 bedeutet hexadezimal
 
 void setup()
 {
-	pinMode(LED_BUILTIN, OUTPUT);
-	digitalWrite(LED_BUILTIN, LOW);
-
-	initSD();
-	
-	//currentBlock = new DBlock;
-
-	TimerInit();
-
 	pinMode(PSR, INPUT);
 	pinMode(PSL, INPUT);
 
